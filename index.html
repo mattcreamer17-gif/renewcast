@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A read on where AI fits in Renewcast's stack, and where Postgres would do the work faster.</title>
+  <meta name="description" content="Renewcast, right? Saw the EUR 1M extension from 2C Ventures in September and the digital-twin-per-asset framing. With 1.8 GW under management across four clients and ten-plus pilots, a hypothesis about where the onboarding math starts breaking on the way to the Series A." />
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a class="logo-lockup" href="#" aria-label="Renewcast">
+        <img src="logo.webp" alt="Renewcast logo" />
+      </a>
+      <div class="topbar-meta" aria-hidden="true">
+        <span class="dot"></span>Prepared for Renewcast &middot; Booth 951
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" aria-label="Opening">
+    <div class="forecast-grid" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div>
+        <span class="eyebrow">Orchestration read &middot; Pre-Series A</span>
+        <h1 class="headline">
+          A read on where AI fits in <span class="accent">Renewcast&rsquo;s</span> stack, and where Postgres would do the work faster.
+        </h1>
+        <p class="hero-sub">
+          You closed the EUR 1M extension with 2C Ventures in September 2025, pushed past 1.8 GW under management, and named the US, Latin America, and Asia as the next three markets. The deep-learning digital twin per asset is doing the accuracy work, and 7% nMAE is a credible number for short-horizon wind. The question that matters between now and the late-2026 Series A is whether the next 10 GW costs the same engineering hours to onboard as the last 1.8, or less. That is an orchestration question, not a modelling one.
+        </p>
+        <div class="hero-meta" aria-label="Operating context">
+          <span><b>1.8 GW</b> under management</span>
+          <span><b>4</b> commercial clients</span>
+          <span><b>10+</b> active pilots</span>
+          <span><b>Series A</b> target: late 2026</span>
+        </div>
+      </div>
+
+      <!-- FORECAST PANEL -->
+      <aside class="forecast-panel" aria-label="Illustrative forecast curve">
+        <div class="panel-head">
+          <span>Intra-day horizon</span>
+          <span class="tag">Digital twin &middot; per asset</span>
+        </div>
+        <div class="panel-title">Scheduled vs. actual generation</div>
+
+        <svg class="chart-svg" viewBox="0 0 420 170" role="img" aria-labelledby="chart-title chart-desc" preserveAspectRatio="none">
+          <title id="chart-title">Forecast accuracy curve</title>
+          <desc id="chart-desc">A smoothed forecast line tracking an actual generation line, with narrowing delta near the current timestamp.</desc>
+
+          <!-- grid -->
+          <g stroke="#e6ecea" stroke-width="1">
+            <line x1="0" y1="30" x2="420" y2="30" />
+            <line x1="0" y1="70" x2="420" y2="70" />
+            <line x1="0" y1="110" x2="420" y2="110" />
+            <line x1="0" y1="150" x2="420" y2="150" />
+          </g>
+
+          <!-- hour ticks -->
+          <g font-family="'JetBrains Mono', monospace" font-size="8" fill="#8a9aa7">
+            <text x="4" y="165">00</text>
+            <text x="84" y="165">06</text>
+            <text x="164" y="165">12</text>
+            <text x="244" y="165">18</text>
+            <text x="324" y="165">24</text>
+            <text x="390" y="165">+D1</text>
+          </g>
+
+          <!-- axis label -->
+          <text x="4" y="14" font-family="'JetBrains Mono', monospace" font-size="9" fill="#5a6774">MW</text>
+
+          <!-- delta band -->
+          <path d="M 0 92 C 60 78, 110 110, 160 84 C 210 58, 260 72, 310 52 C 350 38, 390 44, 420 36
+                   L 420 44 C 390 52, 350 46, 310 60 C 260 80, 210 66, 160 92 C 110 118, 60 86, 0 100 Z"
+                fill="rgba(109,199,180,0.18)" />
+
+          <!-- actual line -->
+          <path d="M 0 96 C 60 82, 110 114, 160 88 C 210 62, 260 76, 310 56 C 350 42, 390 48, 420 40"
+                fill="none" stroke="#0B3B5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+          <!-- forecast line -->
+          <path d="M 0 98 C 60 86, 110 108, 160 90 C 210 68, 260 74, 310 60 C 350 48, 390 50, 420 44"
+                fill="none" stroke="#0E8A7A" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round" stroke-linejoin="round" />
+
+          <!-- now line -->
+          <line x1="230" y1="20" x2="230" y2="152" stroke="#6DC7B4" stroke-width="1" stroke-dasharray="2 3" />
+          <circle cx="230" cy="72" r="3.5" fill="#0E8A7A" stroke="#fff" stroke-width="1.5" />
+          <text x="234" y="26" font-family="'JetBrains Mono', monospace" font-size="8" fill="#0E8A7A">NOW</text>
+        </svg>
+
+        <div class="panel-foot">
+          <div class="kpi">
+            <span class="k">nMAE</span>
+            <span class="v">7%</span>
+          </div>
+          <div class="kpi">
+            <span class="k">Imbalance</span>
+            <span class="v">&minus;50% <em>peak</em></span>
+          </div>
+          <div class="kpi">
+            <span class="k">Upside</span>
+            <span class="v">4 &euro;/MWh</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- THESIS / 60 30 10 -->
+  <section class="thesis" id="thesis" aria-label="The orchestration frame">
+    <div class="container">
+      <div class="section-label">The frame</div>
+      <h2 class="section-title">Most teams building AI-native products automate the wrong layer.</h2>
+      <p class="lede">
+        Renewcast has the right ML layer already. The 10% that has to be AI, per-asset accuracy against chaotic weather inputs, is where the moat sits. The 30% that is rule-based, market settlement rules, per-country dispatch logic, customer reporting templates, does not belong in the model. The 60% that is traditional code and data work, SCADA ingestion, NWP plumbing, drift monitoring, model registry, customer-specific configuration, should sit on a clean orchestration layer that any new engineer can read in a day. The short form is 60/30/10. The useful form is applied to your actual stack, per pipeline, per customer type.
+      </p>
+
+      <div class="stack-diagram" role="list">
+        <article class="layer" role="listitem">
+          <div class="pct">60%</div>
+          <h3>Traditional code &amp; data</h3>
+          <p>SCADA ingestion. NWP plumbing. Drift monitoring. Model registry. Per-customer configuration. Readable in a day.</p>
+        </article>
+        <article class="layer rules" role="listitem">
+          <div class="pct">30%</div>
+          <h3>Rule-based logic</h3>
+          <p>Market settlement rules. Per-country dispatch logic. Customer reporting templates. Outside the model, inside the rules.</p>
+        </article>
+        <article class="layer ai" role="listitem">
+          <div class="pct">10%</div>
+          <h3>Genuine AI</h3>
+          <p>Per-asset forecasts against chaotic weather inputs. Digital twin accuracy. The 7% nMAE and the moat behind it.</p>
+        </article>
+      </div>
+
+      <p class="lede" style="margin-top:44px;">
+        Eduba&rsquo;s job on an engagement like this is to draw the line, write the pattern down, and hand it back so your team can scale against it. Each new commercial customer should cost fewer engineering hours than the last, not the same.
+      </p>
+    </div>
+  </section>
+
+  <!-- EVIDENCE: CASE + PAPER -->
+  <section id="evidence" aria-label="Case study and methodology">
+    <div class="container">
+      <div class="section-label">Evidence</div>
+      <h2 class="section-title">A shape that matches your stage.</h2>
+      <p class="lede">
+        Short, technical, scoped to the specific question. Not a retainer. Not a platform rebuild.
+      </p>
+
+      <div class="evidence">
+        <article class="case-card">
+          <span class="card-kicker">Matching engagement &middot; Feeld</span>
+          <h3>A product company with a CTO moving fast on AI internals.</h3>
+          <p>
+            Feeld brought Eduba in through Andrew Santus, CTO, for a scoped sprint. The delivery: a workshop, targeted advisory, an Organizational Context Architecture, and a Strategic Operations Framework. The shape was short, technical, and priced for a growth-stage company rather than an enterprise.
+          </p>
+          <p>
+            The output was a framework Andrew could use to onboard the next three internal AI projects without re-deciding the same architecture questions each time. Same shape would fit the question of how to onboard the next ten Renewcast customers without re-deciding the same pipeline questions each time.
+          </p>
+        </article>
+
+        <article class="paper-card">
+          <span class="card-kicker">Methodology</span>
+          <h3>Interpretable Context Methodology.</h3>
+          <p>
+            Folder Structure as Agent Architecture. Submitted to ACM TiiS. The layered-context argument (L0 identity through L4 working artifacts) maps directly onto how a forecasting fleet should organize per-site metadata, per-customer configuration, per-model tuning, and per-run outputs.
+          </p>
+          <p>
+            One paper, picked deliberately, because the problem is structural. A digital-twin-per-turbine architecture is an agent-like pipeline by another name.
+          </p>
+          <div class="paper-meta">
+            <a href="https://github.com/RinDig/Interpretable-Context-Methodology-ICM-" target="_blank" rel="noopener">github.com/RinDig/Interpretable-Context-Methodology-ICM-</a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Partnership line (mandatory NLP credibility) -->
+      <div class="partner-line">
+        <strong>Downstream routing.</strong> Eduba partners with NLP Logix for work that sits below the orchestration layer. NLP Logix has been in machine learning since 2011 and runs over 150 data scientists. If a piece of the build turns into a full MLOps platform refactor (model registry, drift monitoring, retraining infrastructure at scale), that is where it routes.
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="cta" aria-label="Next step">
+    <div class="container">
+      <div class="section-label">Next step</div>
+      <h2>Thirty minutes. One pipeline that takes more engineering hours per new customer than you wish it did.</h2>
+      <p class="lede">
+        We will look at where the per-asset work stops and the shared platform work starts, and write it down together. Remote, on your calendar, with Matt Creamer.
+      </p>
+      <div class="cta-row">
+        <a class="btn" href="https://calendly.com/thecro-eduba/30min" target="_blank" rel="noopener" aria-label="Book 30 minutes with Matt Creamer on Calendly">
+          Book 30 minutes with Matt <span class="arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        <div class="cta-meta">
+          <b>Matt Creamer</b>, CRO at Eduba<br />
+          calendly.com/thecro-eduba/30min
+        </div>
+      </div>
+      <div class="cta-bring">
+        Bring one pipeline, one onboarding bottleneck, one number you want tripled by the Series A. Thirty minutes is enough to draw the line between the per-asset work and the shared platform work, and to know whether a scoped sprint is the right next move.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <div>Prepared by Eduba &middot; <a href="https://eduba.io" target="_blank" rel="noopener">eduba.io</a></div>
+      <div>For Renewcast srl &middot; Rome, Italy</div>
+    </div>
+  </footer>
+
+</body>
+</html>
